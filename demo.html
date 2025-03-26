@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDb Premium Clone - Movies, TV and Celebrities</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amazon+Ember:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --imdb-yellow: #f5c518;
+    --imdb-dark-blue: #0c2340;
+    --imdb-light-blue: #1a3d6d;
+    --imdb-gray: #e6e6e6;
+    --imdb-dark-gray: #757575;
+    --imdb-black: #000000;
+    --imdb-white: #ffffff;
+}
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Amazon Ember', Arial, sans-serif;
+    background-color: var(--imdb-white);
+    color: var(--imdb-black);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header Styles */
+.imdb-header {
+    background-color: var(--imdb-dark-blue);
+    color: var(--imdb-white);
+    padding: 1px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--imdb-yellow);
+    margin-right: 25px;
+    letter-spacing: -1px;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 22px;
+    cursor: pointer;
+    margin-right: 15px;
+    color: var(--imdb-white);
+}
+
+.main-nav ul {
+    display: flex;
+    align-items: center;
+}
+
+.main-nav li {
+    margin-right: 20px;
+    position: relative;
+}
+
+.main-nav a {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 300;
+    padding: 8px 0;
+}
+
+.main-nav a:hover {
+    color: var(--imdb-yellow);
+}
+
+.main-nav i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin: 0 30px;
+    position: relative;
+}
+
+.search-form {
+    display: flex;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 15px;
+    background-color: var(--imdb-white);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--imdb-yellow);
+}
+
+.search-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-color: var(--imdb-yellow);
+    color: var(--imdb-black);
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: #e6b800;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+}
+
+.watchlist {
+    margin-right: 20px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.watchlist i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+.sign-in {
+    background-color: transparent;
+    border: 1px solid var(--imdb-white);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.sign-in:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--imdb-yellow);
+    color: var(--imdb-yellow);
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%), 
+                url('https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_QL75_UX1920_CR0,0,1920,999_AL_.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    animation: zoomEffect 20s infinite alternate;
+}
+
+@keyframes zoomEffect {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+.hero-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--imdb-white);
+    padding: 0 40px;
+    max-width: 600px;
+}
+
+.hero-content h1 {
+    font-size: 52px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease;
+}
+
+.hero-content p {
+    font-size: 22px;
+    margin-bottom: 30px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    animation: fadeInUp 1s ease 0.2s forwards;
+    opacity: 0;
+}
+
+.hero-button {
+    display: inline-block;
+    background-color: var(--imdb-yellow);
+    color: var(--imdb-black);
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    animation: fadeInUp 1s ease 0.4s forwards;
+    opacity: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button:hover {
+    background-color: #e6b800;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Main Content */
+.main-content {
+    padding: 40px 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--imdb-dark-blue);
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--imdb-yellow);
+}
+
+.view-all {
+    color: var(--imdb-dark-blue);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.view-all i {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.view-all:hover {
+    color: var(--imdb-yellow);
+}
+
+.view-all:hover i {
+    transform: translateX(3px);
+}
+
+/* Trending Section */
+.trending-section {
+    margin-bottom: 50px;
+}
+
+.trending-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.movie-card {
+    background-color: var(--imdb-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.movie-poster {
+    position: relative;
+    height: 330px;
+    overflow: hidden;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.movie-card:hover .movie-poster img {
+    transform: scale(1.05);
+}
+
+.rating {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: var(--imdb-white);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+.rating i {
+    color: var(--imdb-yellow);
+    margin-right: 5px;
+    font-size: 14px;
+}
+
+.movie-info {
+    padding: 20px;
+}
+
+.movie-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--imdb-dark-gray);
+    font-size: 14px;
+}
+
+.movie-year {
+    margin-bottom: 5px;
+}
+
+.movie-type {
+    background-color: var(--imdb-gray);
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* News Section */
+.news-section {
+    margin-bottom: 50px;
+}
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+}
+
+.news-card {
+    background-color: var(--imdb-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.news-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+.news-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-date {
+    color: var(--imdb-yellow);
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.news-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+.news-excerpt {
+    color: var(--imdb-dark-gray);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.read-more {
+    color: var(--imdb-dark-blue);
+    font-weight: 600;
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+}
+
+.read-more i {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+.read-more:hover {
+    color: var(--imdb-yellow);
+}
+
+.read-more:hover i {
+    transform: translateX(3px);
+}
+
+/* Featured Celebrities */
+.celebrities-section {
+    margin-bottom: 50px;
+}
+
+.celebrities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px;
+}
+
+.celebrity-card {
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.celebrity-card:hover {
+    transform: translateY(-5px);
+}
+
+.celebrity-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    border: 3px solid var(--imdb-yellow);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.celebrity-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.celebrity-card:hover .celebrity-image img {
+    transform: scale(1.1);
+}
+
+.celebrity-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.celebrity-role {
+    color: var(--imdb-dark-gray);
+    font-size: 14px;
+}
+
+/* Coming Soon Section */
+.coming-soon-section {
+    margin-bottom: 50px;
+}
+
+.coming-soon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+.coming-soon-card {
+    background-color: var(--imdb-white);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.coming-soon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.coming-soon-poster {
+    position: relative;
+    height: 370px;
+    overflow: hidden;
+}
+
+.coming-soon-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.coming-soon-card:hover .coming-soon-poster img {
+    transform: scale(1.05);
+}
+
+.release-date {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: var(--imdb-white);
+    padding: 15px;
+    font-weight: 600;
+}
+
+.coming-soon-info {
+    padding: 20px;
+}
+
+.coming-soon-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.coming-soon-genres {
+    color: var(--imdb-dark-gray);
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.watch-trailer {
+    display: inline-block;
+    background-color: var(--imdb-yellow);
+    color: var(--imdb-black);
+    padding: 8px 15px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.watch-trailer:hover {
+    background-color: #e6b800;
+    transform: translateY(-2px);
+}
+
+/* Newsletter Section */
+.newsletter-section {
+    background-color: var(--imdb-dark-blue);
+    padding: 50px 0;
+    margin-bottom: 50px;
+    color: var(--imdb-white);
+}
+
+.newsletter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.newsletter-content {
+    max-width: 600px;
+}
+
+.newsletter-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.newsletter-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.newsletter-form {
+    display: flex;
+    max-width: 500px;
+}
+
+.newsletter-input {
+    flex-grow: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    font-size: 16px;
+}
+
+.newsletter-submit {
+    background-color: var(--imdb-yellow);
+    color: var(--imdb-black);
+    border: none;
+    padding: 0 25px;
+    border-radius: 0 4px 4px 0;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter-submit:hover {
+    background-color: #e6b800;
+}
+
+/* Footer Styles */
+.imdb-footer {
+    background-color: var(--imdb-dark-blue);
+    color: var(--imdb-white);
+    padding: 50px 0 20px;
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.footer-logo {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--imdb-yellow);
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.footer-about {
+    max-width: 300px;
+}
+
+.footer-about p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.footer-links h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: var(--imdb-yellow);
+}
+
+.footer-links ul li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: var(--imdb-gray);
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: var(--imdb-yellow);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-links a {
+    color: var(--imdb-white);
+    margin-right: 15px;
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--imdb-yellow);
+}
+
+.copyright {
+    color: var(--imdb-gray);
+    font-size: 14px;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background-color: var(--imdb-yellow);
+    color: var(--imdb-black);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 999;
+}
+
+.back-to-top.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    background-color: #e6b800;
+    transform: translateY(-3px);
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .hero-content h1 {
+        font-size: 42px;
+    }
+    
+    .hero-content p {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .main-nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: var(--imdb-dark-blue);
+        padding: 20px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        display: none;
+    }
+    
+    .main-nav.active {
+        display: block;
+    }
+    
+    .main-nav ul {
+        flex-direction: column;
+    }
+    
+    .main-nav li {
+        margin: 0 0 15px 0;
+    }
+    
+    .search-container {
+        order: 3;
+        width: 100%;
+        margin: 15px 0 0;
+    }
+    
+    .newsletter-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .newsletter-content {
+        margin-bottom: 30px;
+    }
+    
+    .newsletter-form {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 36px;
+    }
+    
+    .hero-content p {
+        font-size: 18px;
+    }
+    
+    .trending-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .movie-poster {
+        height: 270px;
+    }
+    
+    .news-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .coming-soon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .coming-soon-poster {
+        height: 300px;
+    }
+    
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-about {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-section {
+        height: 400px;
+    }
+    
+    .hero-content {
+        padding: 0 20px;
+    }
+    
+    .hero-content h1 {
+        font-size: 30px;
+    }
+    
+    .hero-content p {
+        font-size: 16px;
+    }
+    
+    .hero-button {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+    }
+    
+    .trending-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+    
+    .movie-poster {
+        height: 225px;
+    }
+    
+    .footer-bottom {
+        flex-direction: column;
+    }
+    
+    .social-links {
+        margin-bottom: 15px;
+    }
+}
+.hero-section {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+}
+
+.hero-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+/* Remove the old hero-background styles */
+@keyframes zoomEffect {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1.05);
+    }
+}
+.theme-toggle {
+    margin-left: 20px;
+}
+
+#themeToggleBtn {
+    background: transparent;
+    border: none;
+    color: var(--imdb-white);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+#themeToggleBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--imdb-yellow);
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark-mode .movie-card,
+body.dark-mode .news-card,
+body.dark-mode .coming-soon-card {
+    background-color: #1e1e1e;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .movie-info,
+body.dark-mode .news-content,
+body.dark-mode .coming-soon-info {
+    color: #e0e0e0;
+}
+
+body.dark-mode .movie-type,
+body.dark-mode .coming-soon-genres {
+    background-color: #333;
+    color: #ccc;
+}
+
+body.dark-mode .section-title,
+body.dark-mode .movie-title,
+body.dark-mode .news-title,
+body.dark-mode .coming-soon-title {
+    color: #ffffff;
+}
+
+body.dark-mode .movie-meta,
+body.dark-mode .news-excerpt {
+    color: #aaa;
+}
+
+body.dark-mode .newsletter-section {
+    background-color: #0a1625;
+}
+
+
+    </style>
+</head>
+<body>
+    <header class="imdb-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="#" class="logo">IMDb</a>
+                <span class="menu-toggle"><i class="fas fa-bars"></i></span>
+            </div>
+            
+            
+            
+            <div class="search-container">
+                <form class="search-form">
+                    <input type="text" placeholder="Search IMDb" class="search-input">
+                    <button type="submit" class="search-button">Search</button>
+                </form>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#"><i class="fas fa-bars"></i> Menu</a></li>
+                    <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#Movies"><i class="fas fa-film"></i> Movies</a></li>
+                    <li><a href="#"><i class="fas fa-tv"></i> TV Shows</a></li>
+                    <li><a href="#Celebrities"><i class="fas fa-star"></i> Celebrities</a></li>
+                    <!-- <li><a href="#"><i class="fas fa-award"></i> Awards & Events</a></li> -->
+                </ul>
+            </nav>
+            <div class="user-actions">
+                <a href="#" class="watchlist"><i class="fas fa-bookmark"></i> Watchlist</a>
+                <a href="#" class="sign-in">Sign In</a>
+            </div>
+            <!-- Add this button in your header (after the sign-in button) -->
+<div class="theme-toggle">
+    <button id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+</div>
+        </div>
+    </header>
+
+
+    <section class="hero-section">
+        <div class="hero-video-container">
+            <video autoplay muted loop class="hero-video">
+                <source src="https://cdn.pixabay.com/video/2022/09/03/130133-746386389_tiny.mp4">
+            </video>
+            <div class="video-overlay"></div>
+        </div>
+        <div class="container hero-content">
+            <h1>Discover Movies, TV Shows & Celebrities</h1>
+            <p>Explore ratings, reviews, and recommendations from the world's largest collection of entertainment data</p>
+            <a href="#" class="hero-button">Explore Now <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="trending-section" id="Movies">
+                <div class="section-header">
+                    <h2 class="section-title">Top Rated Movies</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="trending-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BNDE3ODcxYzMtY2YzZC00NmNlLWJiNDMtZDViZWM2MzIxZDYwXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_QL75_UX380_CR0,4,380,562_.jpg" alt="The Shawshank Redemption">
+                            <div class="rating"><i class="fas fa-star"></i> 9.3</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Shawshank Redemption</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">1994</span>
+                                <span class="movie-type">Movie</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_QL75_UY562_CR1,0,380,562_.jpg" alt="The Godfather">
+                            <div class="rating"><i class="fas fa-star"></i> 9.2</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Godfather</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">1972</span>
+                                <span class="movie-type">Movie</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="The Dark Knight">
+                            <div class="rating"><i class="fas fa-star"></i> 9.0</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Dark Knight</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2008</span>
+                                <span class="movie-type">Movie</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMWU4N2FjNzYtNTVkNC00NzQ0LTg0MjAtYTJlMjFhNGUxZDFmXkEyXkFqcGdeQXVyNjc1NTYyMjg@._V1_QL75_UX380_CR0,1,380,562_.jpg" alt="12 Angry Men">
+                            <div class="rating"><i class="fas fa-star"></i> 8.9</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">12 Angry Men</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">1957</span>
+                                <span class="movie-type">Movie</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTk4ODQzNDY3Ml5BMl5BanBnXkFtZTcwODA0NTM4Nw@@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="The Lord of the Rings: The Return of the King">
+                            <div class="rating"><i class="fas fa-star"></i> 8.9</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Lord of the Rings: The Return of the King</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2003</span>
+                                <span class="movie-type">Movie</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="news-section">
+                <div class="section-header">
+                    <h2 class="section-title">Latest News</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="news-grid">
+                    <div class="news-card">
+                        <div class="news-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_QL75_UX380_CR0,0,380,214_.jpg" alt="New Movie Releases">
+                        </div>
+                        <div class="news-content">
+                            <span class="news-date">June 15, 2023</span>
+                            <h3 class="news-title">Summer Blockbusters: The Most Anticipated Movies of 2023</h3>
+                            <p class="news-excerpt">From superhero epics to animated adventures, discover the biggest movies hitting theaters this summer season.</p>
+                            <a href="#" class="read-more">Read More <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="news-card">
+                        <div class="news-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTU4Mjg1OTY5N15BMl5BanBnXkFtZTgwNzM3MDMyNjM@._V1_QL75_UX380_CR0,0,380,214_.jpg" alt="Celebrity Interviews">
+                        </div>
+                        <div class="news-content">
+                            <span class="news-date">June 12, 2023</span>
+                            <h3 class="news-title">Exclusive Interview with Award-Winning Director Christopher Nolan</h3>
+                            <p class="news-excerpt">The acclaimed filmmaker discusses his latest project, creative process, and the future of cinema.</p>
+                            <a href="#" class="read-more">Read More <i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="celebrities-section" id="Celebrities">
+                <div class="section-header">
+                    <h2 class="section-title">Popular Celebrities</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="celebrities-grid">
+                    <div class="celebrity-card">
+                        <div class="celebrity-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTkxNzI3ODI4Nl5BMl5BanBnXkFtZTcwMjkwMjYzMw@@._V1_QL75_UX214_CR0,0,214,317_.jpg" alt="Leonardo DiCaprio">
+                        </div>
+                        <h3 class="celebrity-name">Leonardo DiCaprio</h3>
+                        <p class="celebrity-role">Actor, Producer</p>
+                    </div>
+                    
+                    <div class="celebrity-card">
+                        <div class="celebrity-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTQ2MjMwNDA3Nl5BMl5BanBnXkFtZTcwMTA2NDY3NQ@@._V1_QL75_UY317_CR2,0,214,317_.jpg" alt="Meryl Streep">
+                        </div>
+                        <h3 class="celebrity-name">Meryl Streep</h3>
+                        <p class="celebrity-role">Actress</p>
+                    </div>
+                    
+                    <div class="celebrity-card">
+                        <div class="celebrity-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTk1MjM3NTU5M15BMl5BanBnXkFtZTcwMTMyMjAyMg@@._V1_QL75_UX214_CR0,0,214,317_.jpg" alt="Tom Hanks">
+                        </div>
+                        <h3 class="celebrity-name">Tom Hanks</h3>
+                        <p class="celebrity-role">Actor, Producer</p>
+                    </div>
+                    
+                    <div class="celebrity-card">
+                        <div class="celebrity-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTY5NzE3NzU3MF5BMl5BanBnXkFtZTgwMjg0NTQ5MDE@._V1_QL75_UX214_CR0,0,214,317_.jpg" alt="Viola Davis">
+                        </div>
+                        <h3 class="celebrity-name">Viola Davis</h3>
+                        <p class="celebrity-role">Actress, Producer</p>
+                    </div>
+                    
+                    <div class="celebrity-card">
+                        <div class="celebrity-image">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMTU4MjU0NjI4NF5BMl5BanBnXkFtZTgwNjU3NTUzMDI@._V1_QL75_UY317_CR7,0,214,317_.jpg" alt="Denzel Washington">
+                        </div>
+                        <h3 class="celebrity-name">Denzel Washington</h3>
+                        <p class="celebrity-role">Actor, Director</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="coming-soon-section">
+                <div class="section-header">
+                    <h2 class="section-title">Coming Soon to Theaters</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="coming-soon-grid">
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="Indiana Jones and the Dial of Destiny">
+                            <div class="release-date">June 30, 2023</div>
+                        </div>
+                        <div class="coming-soon-info">
+                            <h3 class="coming-soon-title">Indiana Jones and the Dial of Destiny</h3>
+                            <p class="coming-soon-genres">Action, Adventure</p>
+                            <a href="#" class="watch-trailer">Watch Trailer</a>
+                        </div>
+                    </div>
+                    
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BMDk4MTdhYzEtODk3OS00ZDBjLWFhNTQtMDI2ODdjNzQzZTA3XkEyXkFqcGdeQXVyMjMxOTE0ODA@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="Mission: Impossible - Dead Reckoning Part One">
+                            <div class="release-date">July 12, 2023</div>
+                        </div>
+                        <div class="coming-soon-info">
+                            <h3 class="coming-soon-title">Mission: Impossible - Dead Reckoning Part One</h3>
+                            <p class="coming-soon-genres">Action, Adventure, Thriller</p>
+                            <a href="#" class="watch-trailer">Watch Trailer</a>
+                        </div>
+                    </div>
+                    
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BNjcxYjg0OWItNDRkYi00YzVkLWI5NzMtMmY3MzJmYzY3YzFkXkEyXkFqcGdeQXVyMTUzMTg2ODkz._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="Oppenheimer">
+                            <div class="release-date">July 21, 2023</div>
+                        </div>
+                        <div class="coming-soon-info">
+                            <h3 class="coming-soon-title">Oppenheimer</h3>
+                            <p class="coming-soon-genres">Biography, Drama, History</p>
+                            <a href="#" class="watch-trailer">Watch Trailer</a>
+                        </div>
+                    </div>
+                    
+                    <div class="coming-soon-card">
+                        <div class="coming-soon-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BNGE4NzM1ODAtN2Y3ZS00YjFmLTlkZjUtNWY1MWQwOWM1NzQwXkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="Barbie">
+                            <div class="release-date">July 21, 2023</div>
+                        </div>
+                        <div class="coming-soon-info">
+                            <h3 class="coming-soon-title">Barbie</h3>
+                            <p class="coming-soon-genres">Adventure, Comedy, Fantasy</p>
+                            <a href="#" class="watch-trailer">Watch Trailer</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <section class="newsletter-section">
+            <div class="container newsletter-container">
+                <div class="newsletter-content">
+                    <h2 class="newsletter-title">Stay Updated with IMDb</h2>
+                    <p class="newsletter-text">Subscribe to our newsletter to receive the latest movie news, reviews, and recommendations directly to your inbox.</p>
+                </div>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-submit">Subscribe</button>
+                </form>
+            </div>
+        </section>
+        
+        <div class="container">
+            <section class="trending-section">
+                <div class="section-header">
+                    <h2 class="section-title">Popular TV Shows</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+                
+                <div class="trending-grid">
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BNDFjYTIxMjctYTQ2ZC00OGQ4LWE3OGYtNDdiMzNiNDZlMDAwXkEyXkFqcGdeQXVyNzI1NzMxNzM@._V1_QL75_UX380_CR0,4,380,562_.jpg" alt="Game of Thrones">
+                            <div class="rating"><i class="fas fa-star"></i> 9.2</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">Game of Thrones</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2011-2019</span>
+                                <span class="movie-type">TV Series</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BN2IzYzBiOTQtNGZmMi00NDI5LTgxMzMtN2EzZjA1NjhlOGMxXkEyXkFqcGdeQXVyNjAwNDUxODI@._V1_QL75_UX380_CR0,1,380,562_.jpg" alt="Breaking Bad">
+                            <div class="rating"><i class="fas fa-star"></i> 9.5</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">Breaking Bad</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2008-2013</span>
+                                <span class="movie-type">TV Series</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BZjRjOTFkOTktZWUzMi00YzMyLThkMmYtMjEwNmQyNzliYTNmXkEyXkFqcGdeQXVyNzQ1ODk3MTQ@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="Stranger Things">
+                            <div class="rating"><i class="fas fa-star"></i> 8.7</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">Stranger Things</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2016-Present</span>
+                                <span class="movie-type">TV Series</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BZGJjYzhjYTYtMDBjYy00OWU1LTg5OTYtNmYwOTZmZjE3ZDdhXkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_QL75_UY562_CR5,0,380,562_.jpg" alt="The Last of Us">
+                            <div class="rating"><i class="fas fa-star"></i> 8.9</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Last of Us</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2023-Present</span>
+                                <span class="movie-type">TV Series</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="https://m.media-amazon.com/images/M/MV5BZWQ4MjA2YzEtOTQzYi00NmQ0LTliYjQtN2FmY2E2YzgwYWY5XkEyXkFqcGdeQXVyMTkxNjUyNQ@@._V1_QL75_UX380_CR0,0,380,562_.jpg" alt="The Mandalorian">
+                            <div class="rating"><i class="fas fa-star"></i> 8.7</div>
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">The Mandalorian</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">2019-Present</span>
+                                <span class="movie-type">TV Series</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="imdb-footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-about">
+                    <a href="#" class="footer-logo">IMDb</a>
+                    <p>IMDb is the world's most popular and authoritative source for movie, TV and celebrity content. Find ratings and reviews for the newest movie and TV shows.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Movies</h4>
+                    <ul>
+                        <li><a href="#">Top Rated Movies</a></li>
+                        <li><a href="#">Most Popular Movies</a></li>
+                        <li><a href="#">Browse Movies by Genre</a></li>
+                        <li><a href="#">Movie News</a></li>
+                        <li><a href="#">Coming Soon</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>TV Shows</h4>
+                    <ul>
+                        <li><a href="#">Top Rated TV Shows</a></li>
+                        <li><a href="#">Most Popular TV Shows</a></li>
+                        <li><a href="#">Browse TV Shows by Genre</a></li>
+                        <li><a href="#">TV News</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>Celebrities</h4>
+                    <ul>
+                        <li><a href="#">Born Today</a></li>
+                        <li><a href="#">Most Popular Celebs</a></li>
+                        <li><a href="#">Celebrity News</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>IMDb Info</h4>
+                    <ul>
+                        <li><a href="#">About IMDb</a></li>
+                        <li><a href="#">Press Room</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Advertising</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    &copy; 1990-2023 by IMDb.com, Inc. | An Amazon Company
+                </div>
+                <div class="footer-links">
+                    <a href="#">Conditions of Use</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Interest-Based Ads</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mainNav = document.querySelector('.main-nav');
+    
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+        });
+    }
+    
+    // Search functionality
+    const searchForm = document.querySelector('.search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchInput = this.querySelector('.search-input');
+            if (searchInput.value.trim()) {
+                alert(`You searched for: ${searchInput.value}`);
+                // In a real app, this would redirect to search results
+                // window.location.href = `/search?q=${encodeURIComponent(searchInput.value)}`;
+            }
+        });
+    }
+    
+    // Back to top button
+    const backToTopButton = document.querySelector('.back-to-top');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopButton.classList.add('active');
+        } else {
+            backToTopButton.classList.remove('active');
+        }
+        
+        // Simulate loading more content when near bottom
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            console.log('Load more content...');
+        }
+    });
+    
+    backToTopButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Movie/TV card hover effects
+    const cards = document.querySelectorAll('.movie-card, .news-card, .coming-soon-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const img = this.querySelector('img');
+            if (img) {
+                img.style.transform = 'scale(1.05)';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const img = this.querySelector('img');
+            if (img) {
+                img.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // View all buttons
+    const viewAllButtons = document.querySelectorAll('.view-all');
+    viewAllButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const sectionTitle = this.previousElementSibling.textContent;
+            alert(`View all ${sectionTitle} would be displayed here`);
+        });
+    });
+    
+    // Watch trailer buttons
+    const trailerButtons = document.querySelectorAll('.watch-trailer');
+    trailerButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const movieTitle = this.closest('.coming-soon-card').querySelector('.coming-soon-title').textContent;
+            alert(`Trailer for ${movieTitle} would play here`);
+        });
+    });
+    
+    // Newsletter form
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('.newsletter-input').value;
+            if (email) {
+                alert(`Thank you for subscribing with ${email}!`);
+                this.querySelector('.newsletter-input').value = '';
+            }
+        });
+    }
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Check for saved theme preference or use system preference
+    const currentTheme = localStorage.getItem('theme') || 
+                        (prefersDarkScheme.matches ? 'dark' : 'light');
+    
+    // Apply the current theme
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+        themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+    
+    // Toggle theme on button click
+    themeToggleBtn.addEventListener('click', function() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        
+        if (isDark) {
+            themeToggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            themeToggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            localStorage.setItem('theme', 'light');
+        }
+    });
+});
+
+    </script>
+</body>
+</html>
